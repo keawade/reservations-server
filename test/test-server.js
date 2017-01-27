@@ -44,7 +44,7 @@ describe('Room', function () {
             res2.body._id.should.equal(res.body[0]._id)
             res2.body.name.should.equal(res.body[0].name)
             res2.body.reservations.should.be.a('array')
-            // res2.body.reservations.should.equal(res.body[0].reservations)
+            res2.body.reservations.should.eql(res.body[0].reservations)
             done()
           })
       })
