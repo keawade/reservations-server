@@ -1,0 +1,1 @@
+mongod --dbpath=data --rest "$@" --httpinterface --port 3001

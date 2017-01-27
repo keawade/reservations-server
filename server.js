@@ -1,4 +1,8 @@
 const express = require('express')
+const mongoose = require('mongoose')
+
+mongoose.connect('mongodb://localhost:3001/reservations')
+console.log('db connected')
 
 const server = express()
 
