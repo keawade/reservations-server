@@ -47,6 +47,10 @@ A system for displaying and modifying meeting room reservations via wall mounted
 
 The `_id` field is returned for referencing objects but is never needed in `POST` or `PUT` bodies. This is the ID used in the REST path.
 
+* `GET` requests return the requested object
+* `POST` and `PUT` requests return the created or updated object
+* `DELETE` requests return `deleted`
+
 #### Room
 
 ```js
