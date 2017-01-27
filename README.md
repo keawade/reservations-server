@@ -61,6 +61,8 @@ The `_id` field is returned for referencing objects but is never needed in `POST
 }
 ```
 
+The `reservations` array is an array of reservation `_id` values.
+
 ### Reservation
 
 ```js
