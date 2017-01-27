@@ -42,3 +42,30 @@ A system for displaying and modifying meeting room reservations via wall mounted
   * Updates the specified reservation
 * `DELETE` `/reservation/:id`
   * Deletes the specified reservation
+
+### Objects
+
+The `_id` field is returned for referencing objects but is never needed in `POST` or `PUT` bodies. This is the ID used in the REST path.
+
+#### Room
+
+```js
+{
+  _id: String,
+  name: String,
+  reservations: Array<String>
+}
+```
+
+### Reservation
+
+```js
+{
+  _id: String,
+  meetingName: String,
+  owner: String,
+  ownerEmail: String,
+  start: Date,
+  end: Date
+}
+```
