@@ -286,3 +286,5 @@ app.all('*', function (req, res) {
 
 console.log('listening at localhost:3000')
 app.listen(3000)
+
+module.exports = app

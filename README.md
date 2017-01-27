@@ -1,6 +1,7 @@
 # reservations-server
 
 [![Join the chat at https://gitter.im/reservations-server/Lobby](https://badges.gitter.im/reservations-server/Lobby.svg)](https://gitter.im/reservations-server/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Standard - JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](http://standardjs.com/)
 
 ## Concept
 
