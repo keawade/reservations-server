@@ -1,5 +1,7 @@
 # reservations-server
 
+[![Join the chat at https://gitter.im/reservations-server/Lobby](https://badges.gitter.im/reservations-server/Lobby.svg)](https://gitter.im/reservations-server/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## Concept
 
 A system for displaying and modifying meeting room reservations via wall mounted terminals at each room, a web interface, and Outlook/Google calendar.
