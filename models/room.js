@@ -5,10 +5,7 @@ const roomSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  reservations: {
-    type: [String],
-    required: true
-  }
+  reservations: [String]
 })
 
 module.exports = mongoose.model('Room', roomSchema)

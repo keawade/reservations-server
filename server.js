@@ -3,16 +3,18 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 
 mongoose.connect('mongodb://localhost:3001/reservations')
+mongoose.Promise = global.Promise
 console.log('db connected')
 
 const app = express()
-app.use(bodyParser.urlencoded({ extended: false }))
+
+app.use(bodyParser.json())
 
 const Room = require('./models/room')
 const Reservation = require('./models/reservation')
 
 app.get('/room', function (req, res) {
-  Room.find({}, 'name', function (err, rooms) {
+  Room.find({}, '_id name reservations', function (err, rooms) {
     if (err) {
       console.error('error:', err)
       res.status(500).send(err)
@@ -25,27 +27,30 @@ app.get('/room', function (req, res) {
 
 app.post('/room', function (req, res) {
   if (!req.body.name) {
-    console.error('Missing required fields')
+    console.error('Missing required fields', req.body)
     res.status(400).send('Missing required fields')
     return
   }
-  const template = {
+  const room = new Room({
     name: req.body.name,
     reservations: []
-  }
-  const room = new Room(template)
+  })
   room.save(function (err, newRoom) {
     if (err) {
-      console.error('failed to create room', template, err)
+      console.error('failed to create room', err)
       res.status(500).send(err)
       return
     }
-    res.send(newRoom)
+    res.send({
+      _id: newRoom._id,
+      name: newRoom.name,
+      reservations: newRoom.reservations
+    })
   })
 })
 
 app.get('/room/:id', function (req, res) {
-  Room.findOne({ '_id': req.params.id }, 'name', function (err, room) {
+  Room.findOne({ '_id': req.params.id }, '_id name reservations', function (err, room) {
     if (err) {
       console.error('error:', err)
       res.status(500).send(err)
@@ -62,29 +67,25 @@ app.get('/room/:id', function (req, res) {
 })
 
 app.put('/room/:id', function (req, res) {
-  if (!req.body.name || !req.body.reservations) {
-    console.error('Missing required fields')
-    res.status(400).send('Invalid body')
-    return
-  }
-  const update = {
-    name: req.body.name,
-    reservations: req.body.reservations
-  }
   Room.findOne({ '_id': req.params.id }, function (err, room) {
     if (err) {
       console.error('error:', err)
       res.status(500).send(err)
       return
     }
-    Object.assign(room, update)
+    room.name = req.body.name ? req.body.name : room.name
+    room.reservations = req.body.reservations ? req.body.reservations : room.reservations
     room.save(function (err, updatedRoom) {
       if (err) {
         console.error('error:', err)
         res.status(500).send(err)
         return
       }
-      res.send(updatedRoom)
+      res.send({
+        _id: updatedRoom._id,
+        name: updatedRoom.name,
+        reservations: updatedRoom.reservations
+      })
     })
   })
 })
@@ -146,7 +147,15 @@ app.post('/reservation', function (req, res) {
       res.status(500).send(err)
       return
     }
-    res.send(newReservation)
+    console.log('created reservation', newReservation._id)
+    res.send({
+      _id: newReservation._id,
+      meetingName: newReservation.meetingName,
+      owner: newReservation.owner,
+      ownerEmail: newReservation.ownerEmail,
+      start: newReservation.start,
+      end: newReservation.end
+    })
   })
 })
 
@@ -157,8 +166,15 @@ app.get('/reservation/:id', function (req, res) {
       res.status(500).send(err)
       return
     }
-    console.log('got reservation by id', reservation)
-    res.send(reservation)
+    console.log('got reservation', reservation._id)
+    res.send({
+      _id: reservation._id,
+      meetingName: reservation.meetingName,
+      owner: reservation.owner,
+      ownerEmail: reservation.ownerEmail,
+      start: reservation.start,
+      end: reservation.end
+    })
   })
 })
 
@@ -190,8 +206,15 @@ app.put('/reservation/:id', function (req, res) {
         res.status(500).send(err)
         return
       }
-      console.log('updated reservation', updatedReservation)
-      res.send(updatedReservation)
+      console.log('updated reservation', updatedReservation._id)
+      res.send({
+        _id: updatedReservation._id,
+        meetingName: updatedReservation.meetingName,
+        owner: updatedReservation.owner,
+        ownerEmail: updatedReservation.ownerEmail,
+        start: updatedReservation.start,
+        end: updatedReservation.end
+      })
     })
   })
 })
