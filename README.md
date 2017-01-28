@@ -79,3 +79,13 @@ The `reservations` array is an array of reservation `_id` values.
   end: Date
 }
 ```
+
+### Message
+
+Message objects are sent as the body of any request that does not return a `room` or `reservation`.
+
+```js
+{
+  message: String
+}
+```
