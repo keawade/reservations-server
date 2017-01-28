@@ -55,6 +55,32 @@ describe('Reservation', function () {
         done()
       })
   })
-  it('should update a SINGLE reservation on /reservation/:id PUT')
+  it('should update a SINGLE reservation on /reservation/:id PUT', function (done) {
+    const newMeetingName = `${faker.name.jobType()} ${faker.company.catchPhraseAdjective()} meeting`
+    const user = faker.helpers.userCard()
+    const newStart = moment().subtract(Math.floor(Math.random() * 600), 'days').subtract(Math.floor(Math.random() * 10), 'hours').format()
+    const newEnd = moment(newStart).add(1, 'hour').format()
+    chai.request(server)
+      .put(`/reservation/${resId}`)
+      .send({
+        meetingName: newMeetingName,
+        owner: user.name,
+        ownerEmail: user.email,
+        start: newStart,
+        end: newEnd
+      })
+      .end(function(err, res) {
+        res.should.have.status(200)
+        res.should.be.json
+        res.should.be.a('object')
+        res.body._id.should.be.a('string')
+        res.body.meetingName.should.equal(newMeetingName)
+        res.body.owner.should.equal(user.name)
+        res.body.ownerEmail.should.equal(user.email)
+        res.body.start.should.equal(newStart)
+        res.body.end.should.equal(newEnd)
+        done()
+      })
+  })
   it('should delete a SINGLE reservation on /reservation/:id DELETE')
 })
