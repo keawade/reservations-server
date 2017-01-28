@@ -39,6 +39,15 @@ describe('Reservation', function () {
         done()
       })
   })
+  it('should list ALL reservations on /reservation GET', function (done) {
+    chai.request(server)
+      .get('/reservation')
+      .end(function (err, res) {
+        res.should.have.status(200)
+        res.body.should.be.a('array')
+        done()
+      })
+  })
   it('should list a SINGLE reservation on /reservation/:id GET', function (done) {
     chai.request(server)
       .get(`/reservation/${resId}`)

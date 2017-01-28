@@ -3,6 +3,22 @@ const router = express.Router()
 
 const Reservation = require('../models/reservation')
 
+router.get('/reservation', function (req, res) {
+  try {
+    Reservation.find({}, '_id meetingName owner ownerEmail start end')
+      .then((reservations) => {
+        res.status(200).send(reservations)
+      })
+      .catch((error) => {
+        console.error('failed to find reservations', error)
+        res.status(500).send({ message: 'internal error' })
+      })
+  } catch (err) {
+    console.error('general error', err)
+    res.status(500).send({ message: 'internal error' })
+  }
+})
+
 router.post('/reservation', function (req, res) {
   try {
     if (!req.body.meetingName || !req.body.owner || !req.body.ownerEmail || !req.body.start || !req.body.end) {
