@@ -19,7 +19,6 @@ router.post('/reservation', function (req, res) {
     })
     reservation.save()
       .then((newReservation) => {
-        console.log('created reservation', newReservation._id)
         res.send({
           _id: newReservation._id,
           meetingName: newReservation.meetingName,
@@ -34,6 +33,7 @@ router.post('/reservation', function (req, res) {
         res.status(500).send(error)
       })
   } catch (err) {
+    console.error('general error', err)
     res.status(500).send(err)
   }
 })
@@ -42,7 +42,6 @@ router.get('/reservation/:id', function (req, res) {
   try {
     Reservation.findOne({ '_id': req.params.id })
       .then((reservation) => {
-        console.log('got reservation', reservation._id)
         res.send({
           _id: reservation._id,
           meetingName: reservation.meetingName,
@@ -57,6 +56,7 @@ router.get('/reservation/:id', function (req, res) {
         res.status(500).send(error)
       })
   } catch (err) {
+    console.error('general error', err)
     res.status(500).send(err)
   }
 })
@@ -82,7 +82,6 @@ router.put('/reservation/:id', function (req, res) {
         reservation.end = req.body.end ? req.body.end : reservation.end
         reservation.save()
           .then((updatedReservation) => {
-            console.log('updated reservation', updatedReservation._id)
             res.send({
               _id: updatedReservation._id,
               meetingName: updatedReservation.meetingName,
@@ -102,6 +101,7 @@ router.put('/reservation/:id', function (req, res) {
         res.status(404).send(error)
       })
   } catch (err) {
+    console.error('general error', err)
     res.status(500).send(err)
   }
 })
@@ -120,10 +120,11 @@ router.delete('/reservation/:id', function (req, res) {
           })
       })
       .catch((error) => {
-        console.error('failed to find reservation for deletion', req.params.id, error)
+        console.warn('failed to find reservation for deletion', req.params.id, error)
         res.status(404).send(error)
       })
   } catch (err) {
+    console.error('general error', err)
     res.status(500).send(err)
   }
 })

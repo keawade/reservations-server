@@ -2,20 +2,19 @@ const express = require('express')
 const router = express.Router()
 
 const Room = require('../models/room')
-const Reservation = require('../models/reservation')
 
 router.get('/room', function (req, res) {
   try {
-    Room.find({}, '_id name reservations', function (err, rooms) {
-      if (err) {
-        console.error('error:', err)
-        res.status(500).send(err)
-        return
-      }
-      console.log('returning all rooms')
-      res.send(rooms)
-    })
+    Room.find({}, '_id name reservations')
+      .then((rooms) => {
+        res.send(rooms)
+      })
+      .catch((error) => {
+        console.error('error:', error)
+        res.status(500).send(error)
+      })
   } catch (err) {
+    console.error('general error', err)
     res.status(500).send(err)
   }
 })
@@ -33,7 +32,6 @@ router.post('/room', function (req, res) {
     })
     room.save()
       .then((newRoom) => {
-        console.log('created new room', newRoom._id)
         res.send({
           _id: newRoom._id,
           name: newRoom.name,
@@ -45,6 +43,7 @@ router.post('/room', function (req, res) {
         res.status(500).send(error)
       })
   } catch (err) {
+    console.error('general error', err)
     res.status(500).send(err)
   }
 })
@@ -53,19 +52,14 @@ router.get('/room/:id', function (req, res) {
   try {
     Room.findOne({ '_id': req.params.id }, '_id name reservations')
     .then((room) => {
-      if (room) {
-        console.log('found room', room)
-        res.send(room)
-      } else {
-        console.log('room not found')
-        res.send('Error: room not found')
-      }
+      res.send(room)
     })
     .catch((error) => {
-      console.error('error:', error)
-      res.status(500).send(error)
+      console.error('failed to find room', error)
+      res.status(404).send(error)
     })
   } catch (err) {
+    console.error('general error', err)
     res.status(500).send(err)
   }
 })
@@ -78,7 +72,6 @@ router.put('/room/:id', function (req, res) {
         room.reservations = req.body.reservations ? req.body.reservations : room.reservations
         room.save()
           .then((updatedRoom) => {
-            console.log('updated room', updatedRoom._id)
             res.send({
               _id: updatedRoom._id,
               name: updatedRoom.name,
@@ -95,6 +88,7 @@ router.put('/room/:id', function (req, res) {
         res.status(500).send(error)
       })
   } catch (err) {
+    console.error('general error', err)
     res.status(500).send(err)
   }
 })
@@ -103,39 +97,21 @@ router.delete('/room/:id', function (req, res) {
   try {
     Room.findOne({ '_id': req.params.id })
       .then((room) => {
-        const promises = room.reservations.map((roomReserv) => {
-          return Reservation.findOne({ '_id': roomReserv._id })
-        })
-        Promise.all(promises)
-          .then((reservations) => {
-            const delPromises = reservations.map((reservation) => {
-              return reservation.remove()
-            })
-            Promise.all(delPromises)
-              .then(() => {
-                console.log('deleted reservations')
-                room.remove()
-                  .then(() => {
-                    res.send({'deleted': true})
-                  })
-                  .catch((error) => {
-                    console.error('error:', error)
-                    res.status(500).send(error)
-                  })
-              })
-              .catch((error) => {
-                console.error('failed to delete reservation', error)
-              })
+        room.remove()
+          .then(() => {
+            res.send({'deleted': true})
           })
           .catch((error) => {
-            console.log('failed to find reservations', error)
+            console.error('failed to delete room', req.params._id)
+            res.status(500).send(error)
           })
-        .catch((error) => {
-          console.error('error:', error)
-          res.status(500).send(error)
-        })
+      })
+      .catch((error) => {
+        console.error('failed to find room for deletion', req.params._id, error)
+        res.status(404).send({ 'deleted': false })
       })
   } catch (err) {
+    console.error('general error', err)
     res.status(500).send(err)
   }
 })
