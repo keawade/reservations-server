@@ -4,7 +4,7 @@ const bodyParser = require('body-parser')
 
 const routes = require('./routes')
 
-mongoose.connect('mongodb://localhost:3001/reservations')
+mongoose.connect(`mongodb://${process.env.dbuser}:${process.env.dbpass}@ds011923.mlab.com:11923/reservations`)
 mongoose.Promise = global.Promise
 console.log('db connected')
 
