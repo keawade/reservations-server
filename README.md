@@ -53,7 +53,7 @@ The `_id` field is returned for referencing objects but is never needed in `POST
 
 * `GET` requests return the requested object
 * `POST` and `PUT` requests return the created or updated object
-* `DELETE` requests return `deleted`
+* `DELETE` requests returns a message
 
 #### Room
 
