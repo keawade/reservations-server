@@ -7,7 +7,7 @@ router.post('/reservation', function (req, res) {
   try {
     if (!req.body.meetingName || !req.body.owner || !req.body.ownerEmail || !req.body.start || !req.body.end) {
       console.warn('failed to create reservation: missing body arguments', req.body)
-      res.status(400).send('Invalid body')
+      res.status(400).send({ error: 'Invalid body' })
       return
     }
     const reservation = new Reservation({
@@ -30,11 +30,11 @@ router.post('/reservation', function (req, res) {
       })
       .catch((error) => {
         console.error('failed to create reservation', error)
-        res.status(500).send(error)
+        res.status(500).send({ error: error })
       })
   } catch (err) {
     console.error('general error', err)
-    res.status(500).send(err)
+    res.status(500).send({ error: err })
   }
 })
 
@@ -53,11 +53,11 @@ router.get('/reservation/:id', function (req, res) {
       })
       .catch((error) => {
         console.error('error:', error)
-        res.status(500).send(error)
+        res.status(500).send({ error: error })
       })
   } catch (err) {
     console.error('general error', err)
-    res.status(500).send(err)
+    res.status(500).send({ error: err })
   }
 })
 
@@ -71,7 +71,7 @@ router.put('/reservation/:id', function (req, res) {
       !req.body.end
     ) {
       console.warn('failed to update reservation: missing body arguments')
-      res.status(400).send('Invalid body')
+      res.status(400).send({ error: 'Invalid body' })
     }
     Reservation.findOne({ '_id': req.params.id })
       .then((reservation) => {
@@ -93,16 +93,16 @@ router.put('/reservation/:id', function (req, res) {
           })
           .catch((error) => {
             console.error('failed to update reservation', error)
-            res.status(500).send(error)
+            res.status(500).send({ error: error })
           })
       })
       .catch((error) => {
         console.warn('could not find reservation', req.params.id, error)
-        res.status(404).send(error)
+        res.status(404).send({ error: error })
       })
   } catch (err) {
     console.error('general error', err)
-    res.status(500).send(err)
+    res.status(500).send({ error: err })
   }
 })
 
@@ -116,16 +116,16 @@ router.delete('/reservation/:id', function (req, res) {
           })
           .catch((error) => {
             console.error('failed to delete reservation', req.params.id, error)
-            res.status(500).send(error)
+            res.status(500).send({ error: error })
           })
       })
       .catch((error) => {
         console.warn('failed to find reservation for deletion', req.params.id, error)
-        res.status(404).send(error)
+        res.status(404).send({ error: error })
       })
   } catch (err) {
     console.error('general error', err)
-    res.status(500).send(err)
+    res.status(500).send({ error: err })
   }
 })
 

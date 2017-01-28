@@ -11,11 +11,11 @@ router.get('/room', function (req, res) {
       })
       .catch((error) => {
         console.error('error:', error)
-        res.status(500).send(error)
+        res.status(500).send({ error: error })
       })
   } catch (err) {
     console.error('general error', err)
-    res.status(500).send(err)
+    res.status(500).send({ error: err })
   }
 })
 
@@ -23,7 +23,7 @@ router.post('/room', function (req, res) {
   try {
     if (!req.body.name) {
       console.error('Missing required fields', req.body)
-      res.status(400).send('Missing required fields')
+      res.status(400).send({ error: 'Missing required fields' })
       return
     }
     const room = new Room({
@@ -40,11 +40,11 @@ router.post('/room', function (req, res) {
       })
       .catch((error) => {
         console.error('failed to create room', error)
-        res.status(500).send(error)
+        res.status(500).send({ error: error })
       })
   } catch (err) {
     console.error('general error', err)
-    res.status(500).send(err)
+    res.status(500).send({ error: err })
   }
 })
 
@@ -56,11 +56,11 @@ router.get('/room/:id', function (req, res) {
     })
     .catch((error) => {
       console.error('failed to find room', error)
-      res.status(404).send(error)
+      res.status(404).send({ error: error })
     })
   } catch (err) {
     console.error('general error', err)
-    res.status(500).send(err)
+    res.status(500).send({ error: err })
   }
 })
 
@@ -80,16 +80,16 @@ router.put('/room/:id', function (req, res) {
           })
           .catch((error) => {
             console.error('error:', error)
-            res.status(500).send(error)
+            res.status(500).send({ error: error })
           })
       })
       .catch((error) => {
         console.error('error:', error)
-        res.status(500).send(error)
+        res.status(500).send({ error: error })
       })
   } catch (err) {
     console.error('general error', err)
-    res.status(500).send(err)
+    res.status(500).send({ error: err })
   }
 })
 
@@ -103,16 +103,16 @@ router.delete('/room/:id', function (req, res) {
           })
           .catch((error) => {
             console.error('failed to delete room', req.params._id)
-            res.status(500).send(error)
+            res.status(500).send({ error: error })
           })
       })
       .catch((error) => {
         console.error('failed to find room for deletion', req.params._id, error)
-        res.status(404).send({ 'deleted': false })
+        res.status(404).send({ error: 'not found' })
       })
   } catch (err) {
     console.error('general error', err)
-    res.status(500).send(err)
+    res.status(500).send({ error: err })
   }
 })
 
