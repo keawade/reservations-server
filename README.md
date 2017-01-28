@@ -67,7 +67,7 @@ The `_id` field is returned for referencing objects but is never needed in `POST
 
 The `reservations` array is an array of reservation `_id` values.
 
-### Reservation
+#### Reservation
 
 ```js
 {
@@ -80,7 +80,7 @@ The `reservations` array is an array of reservation `_id` values.
 }
 ```
 
-### Message
+#### Message
 
 Message objects are sent as the body of any request that does not return a `room` or `reservation`.
 
