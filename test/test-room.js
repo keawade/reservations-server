@@ -24,7 +24,7 @@ describe('Room', function () {
         testRoom.name = res.body.name
         testRoom.reservations = res.body.reservations
 
-        res.should.have.status(200)
+        res.should.have.status(201)
         res.should.be.json
         res.should.be.a('object')
         res.body._id.should.be.a('string')
@@ -84,7 +84,7 @@ describe('Room', function () {
         // TODO: Verify reservations have been deleted
         res.should.have.status(200)
         res.should.be.json
-        res.body.deleted.should.equal(true)
+        res.body.message.should.equal('room deleted')
         done()
       })
   })

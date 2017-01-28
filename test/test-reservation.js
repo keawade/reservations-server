@@ -27,7 +27,7 @@ describe('Reservation', function () {
       })
       .end(function (err, res) {
         resId = res.body._id
-        res.should.have.status(200)
+        res.should.have.status(201)
         res.should.be.json
         res.should.be.a('object')
         res.body._id.should.be.a('string')
@@ -88,7 +88,7 @@ describe('Reservation', function () {
       .end(function (err, res) {
         res.should.have.status(200)
         res.should.be.json
-        res.body.deleted.should.equal(true)
+        res.body.message.should.equal('reservation deleted')
         done()
       })
   })

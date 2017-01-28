@@ -7,7 +7,7 @@ router.post('/reservation', function (req, res) {
   try {
     if (!req.body.meetingName || !req.body.owner || !req.body.ownerEmail || !req.body.start || !req.body.end) {
       console.warn('failed to create reservation: missing body arguments', req.body)
-      res.status(400).send({ error: 'Invalid body' })
+      res.status(400).send({ message: 'Invalid body' })
       return
     }
     const reservation = new Reservation({
@@ -19,7 +19,7 @@ router.post('/reservation', function (req, res) {
     })
     reservation.save()
       .then((newReservation) => {
-        res.send({
+        res.status(201).send({
           _id: newReservation._id,
           meetingName: newReservation.meetingName,
           owner: newReservation.owner,
@@ -30,11 +30,11 @@ router.post('/reservation', function (req, res) {
       })
       .catch((error) => {
         console.error('failed to create reservation', error)
-        res.status(500).send({ error: error })
+        res.status(500).send({ message: 'internal error' })
       })
   } catch (err) {
     console.error('general error', err)
-    res.status(500).send({ error: err })
+    res.status(500).send({ message: 'internal error' })
   }
 })
 
@@ -42,7 +42,7 @@ router.get('/reservation/:id', function (req, res) {
   try {
     Reservation.findOne({ '_id': req.params.id })
       .then((reservation) => {
-        res.send({
+        res.status(200).send({
           _id: reservation._id,
           meetingName: reservation.meetingName,
           owner: reservation.owner,
@@ -52,12 +52,12 @@ router.get('/reservation/:id', function (req, res) {
         })
       })
       .catch((error) => {
-        console.error('error:', error)
-        res.status(500).send({ error: error })
+        console.error('message:', error)
+        res.status(404).send({ message: 'reservation does not exist' })
       })
   } catch (err) {
     console.error('general error', err)
-    res.status(500).send({ error: err })
+    res.status(500).send({ message: 'internal error' })
   }
 })
 
@@ -71,7 +71,7 @@ router.put('/reservation/:id', function (req, res) {
       !req.body.end
     ) {
       console.warn('failed to update reservation: missing body arguments')
-      res.status(400).send({ error: 'Invalid body' })
+      res.status(400).send({ message: 'Invalid body' })
     }
     Reservation.findOne({ '_id': req.params.id })
       .then((reservation) => {
@@ -82,7 +82,7 @@ router.put('/reservation/:id', function (req, res) {
         reservation.end = req.body.end ? req.body.end : reservation.end
         reservation.save()
           .then((updatedReservation) => {
-            res.send({
+            res.status(200).send({
               _id: updatedReservation._id,
               meetingName: updatedReservation.meetingName,
               owner: updatedReservation.owner,
@@ -93,16 +93,16 @@ router.put('/reservation/:id', function (req, res) {
           })
           .catch((error) => {
             console.error('failed to update reservation', error)
-            res.status(500).send({ error: error })
+            res.status(500).send({ message: 'internal error' })
           })
       })
       .catch((error) => {
         console.warn('could not find reservation', req.params.id, error)
-        res.status(404).send({ error: error })
+        res.status(404).send({ message: 'reservation does not exist' })
       })
   } catch (err) {
     console.error('general error', err)
-    res.status(500).send({ error: err })
+    res.status(500).send({ message: 'internal error' })
   }
 })
 
@@ -112,20 +112,20 @@ router.delete('/reservation/:id', function (req, res) {
       .then((reservation) => {
         reservation.remove()
           .then(() => {
-            res.send({'deleted': true})
+            res.status(200).send({ message: 'reservation deleted' })
           })
           .catch((error) => {
             console.error('failed to delete reservation', req.params.id, error)
-            res.status(500).send({ error: error })
+            res.status(500).send({ message: 'internal error' })
           })
       })
       .catch((error) => {
         console.warn('failed to find reservation for deletion', req.params.id, error)
-        res.status(404).send({ error: error })
+        res.status(404).send({ message: 'reservation does not exist' })
       })
   } catch (err) {
     console.error('general error', err)
-    res.status(500).send({ error: err })
+    res.status(500).send({ message: 'internal error' })
   }
 })
 
