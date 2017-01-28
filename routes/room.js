@@ -23,7 +23,7 @@ router.post('/room', function (req, res) {
   try {
     if (!req.body.name) {
       console.error('Missing required fields', req.body)
-      res.status(400).send({ message: 'Missing required fields' })
+      res.status(400).send({ message: 'invalid body' })
       return
     }
     const room = new Room({

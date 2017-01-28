@@ -7,7 +7,7 @@ router.post('/reservation', function (req, res) {
   try {
     if (!req.body.meetingName || !req.body.owner || !req.body.ownerEmail || !req.body.start || !req.body.end) {
       console.warn('failed to create reservation: missing body arguments', req.body)
-      res.status(400).send({ message: 'Invalid body' })
+      res.status(400).send({ message: 'invalid body' })
       return
     }
     const reservation = new Reservation({
