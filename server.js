@@ -125,7 +125,7 @@ app.delete('/room/:id', function (req, res) {
                 console.log('deleted reservations')
                 room.remove()
                   .then(() => {
-                    res.send('deleted')
+                    res.send({'deleted': true})
                   })
                   .catch((error) => {
                     console.error('error:', error)
