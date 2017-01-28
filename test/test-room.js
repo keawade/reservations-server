@@ -4,7 +4,7 @@ const chaiHttp = require('chai-http')
 const server = require('../server')
 // eslint-disable-next-line no-unused-vars
 const should = chai.should()
-const moniker = require('moniker')
+const faker = require('faker')
 
 chai.use(chaiHttp)
 
@@ -20,15 +20,16 @@ describe('Room', function () {
       })
   })
   it('should add a SINGLE room on /room POST', function (done) {
+    const newName = `${faker.company.bsBuzz()} ${faker.commerce.department()}`
     chai.request(server)
       .post('/room')
-      .send({ 'name': 'Test Room' })
+      .send({ 'name': newName })
       .end(function (err, res) {
         res.should.have.status(200)
         res.should.be.json
         res.should.be.a('object')
         res.body._id.should.be.a('string')
-        res.body.name.should.equal('Test Room')
+        res.body.name.should.equal(newName)
         res.body.reservations.should.be.a('array')
         done()
       })
@@ -52,7 +53,7 @@ describe('Room', function () {
       })
   })
   it('should update a SINGLE room on /room/:id PUT', function (done) {
-    const newName = `${moniker.choose()}`
+    const newName = `${faker.company.bsBuzz()} ${faker.commerce.department()}`
     chai.request(server)
       .get('/room')
       .end(function (err, res) {
