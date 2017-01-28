@@ -10,6 +10,7 @@ const moment = require('moment')
 chai.use(chaiHttp)
 
 describe('Reservation', function () {
+  let resId = ''
   it('should add a SINGLE reservation on /reservation POST', function (done) {
     const newMeetingName = `${faker.name.jobType()} ${faker.company.catchPhraseAdjective()} meeting`
     const user = faker.helpers.userCard()
@@ -25,6 +26,7 @@ describe('Reservation', function () {
         'end': newEnd
       })
       .end(function (err, res) {
+        resId = res.body._id
         res.should.have.status(200)
         res.should.be.json
         res.should.be.a('object')
@@ -37,7 +39,22 @@ describe('Reservation', function () {
         done()
       })
   })
-  it('should list a SINGLE reservation on /reservation/:id GET')
+  it('should list a SINGLE reservation on /reservation/:id GET', function (done) {
+    chai.request(server)
+      .get(`/reservation/${resId}`)
+      .end(function (err, res) {
+        res.should.have.status(200)
+        res.should.be.json
+        res.should.be.a('object')
+        res.body._id.should.be.a('string')
+        res.body.meetingName.should.be.a('string')
+        res.body.owner.should.be.a('string')
+        res.body.ownerEmail.should.be.a('string')
+        res.body.start.should.be.a('string')
+        res.body.end.should.be.a('string')
+        done()
+      })
+  })
   it('should update a SINGLE reservation on /reservation/:id PUT')
   it('should delete a SINGLE reservation on /reservation/:id DELETE')
 })
