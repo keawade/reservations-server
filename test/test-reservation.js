@@ -69,7 +69,7 @@ describe('Reservation', function () {
         start: newStart,
         end: newEnd
       })
-      .end(function(err, res) {
+      .end(function (err, res) {
         res.should.have.status(200)
         res.should.be.json
         res.should.be.a('object')
@@ -82,5 +82,14 @@ describe('Reservation', function () {
         done()
       })
   })
-  it('should delete a SINGLE reservation on /reservation/:id DELETE')
+  it('should delete a SINGLE reservation on /reservation/:id DELETE', function (done) {
+    chai.request(server)
+      .delete(`/reservation/${resId}`)
+      .end(function (err, res) {
+        res.should.have.status(200)
+        res.should.be.json
+        res.body.deleted.should.equal(true)
+        done()
+      })
+  })
 })

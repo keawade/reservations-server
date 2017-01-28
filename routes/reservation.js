@@ -112,7 +112,7 @@ router.delete('/reservation/:id', function (req, res) {
       .then((reservation) => {
         reservation.remove()
           .then(() => {
-            res.send('deleted')
+            res.send({'deleted': true})
           })
           .catch((error) => {
             console.error('failed to delete reservation', req.params.id, error)
