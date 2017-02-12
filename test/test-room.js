@@ -8,6 +8,8 @@ const faker = require('faker')
 
 chai.use(chaiHttp)
 
+const REST_URL = '/rest'
+
 describe('Room', function () {
   let testRoom = {
     _id: '',
@@ -17,7 +19,7 @@ describe('Room', function () {
   it('should add a SINGLE room on /room POST', function (done) {
     const newName = `${faker.commerce.department()} ${faker.company.bsBuzz()}`
     chai.request(server)
-      .post('/room')
+      .post(`${REST_URL}/room`)
       .send({ 'name': newName })
       .end(function (err, res) {
         testRoom._id = res.body._id
@@ -35,7 +37,7 @@ describe('Room', function () {
   })
   it('should list ALL rooms on /room GET', function (done) {
     chai.request(server)
-      .get('/room')
+      .get(`${REST_URL}/room`)
       .end(function (err, res) {
         res.should.have.status(200)
         res.should.be.json
@@ -45,7 +47,7 @@ describe('Room', function () {
   })
   it('should list a SINGLE room on /room/:id GET', function (done) {
     chai.request(server)
-      .get(`/room/${testRoom._id}`)
+      .get(`${REST_URL}/room/${testRoom._id}`)
       .end(function (err, res2) {
         res2.should.have.status(200)
         res2.should.be.json
@@ -61,7 +63,7 @@ describe('Room', function () {
     const newName = `${faker.commerce.department()} ${faker.company.bsBuzz()}`
     testRoom.name = newName
     chai.request(server)
-      .put(`/room/${testRoom._id}`)
+      .put(`${REST_URL}/room/${testRoom._id}`)
       .send({
         'name': newName,
         'reservations': []
@@ -79,7 +81,7 @@ describe('Room', function () {
   })
   it('should delete a SINGLE room and ALL linked reservations on /room/:id PUT', function (done) {
     chai.request(server)
-      .delete(`/room/${testRoom._id}`)
+      .delete(`${REST_URL}/room/${testRoom._id}`)
       .end(function (err, res) {
         // TODO: Verify reservations have been deleted
         res.should.have.status(200)

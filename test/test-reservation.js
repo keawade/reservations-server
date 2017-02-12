@@ -9,6 +9,8 @@ const moment = require('moment')
 
 chai.use(chaiHttp)
 
+const REST_URL = '/rest'
+
 describe('Reservation', function () {
   let resId = ''
   it('should add a SINGLE reservation on /reservation POST', function (done) {
@@ -17,7 +19,7 @@ describe('Reservation', function () {
     const newStart = moment().subtract(Math.floor(Math.random() * 600), 'days').subtract(Math.floor(Math.random() * 10), 'hours').format()
     const newEnd = moment(newStart).add(1, 'hour').format()
     chai.request(server)
-      .post('/reservation')
+      .post(`${REST_URL}/reservation`)
       .send({
         'meetingName': newMeetingName,
         'owner': user.name,
@@ -41,7 +43,7 @@ describe('Reservation', function () {
   })
   it('should list ALL reservations on /reservation GET', function (done) {
     chai.request(server)
-      .get('/reservation')
+      .get(`${REST_URL}/reservation`)
       .end(function (err, res) {
         res.should.have.status(200)
         res.body.should.be.a('array')
@@ -50,7 +52,7 @@ describe('Reservation', function () {
   })
   it('should list a SINGLE reservation on /reservation/:id GET', function (done) {
     chai.request(server)
-      .get(`/reservation/${resId}`)
+      .get(`${REST_URL}/reservation/${resId}`)
       .end(function (err, res) {
         res.should.have.status(200)
         res.should.be.json
@@ -70,7 +72,7 @@ describe('Reservation', function () {
     const newStart = moment().subtract(Math.floor(Math.random() * 600), 'days').subtract(Math.floor(Math.random() * 10), 'hours').format()
     const newEnd = moment(newStart).add(1, 'hour').format()
     chai.request(server)
-      .put(`/reservation/${resId}`)
+      .put(`${REST_URL}/reservation/${resId}`)
       .send({
         meetingName: newMeetingName,
         owner: user.name,
@@ -93,7 +95,7 @@ describe('Reservation', function () {
   })
   it('should delete a SINGLE reservation on /reservation/:id DELETE', function (done) {
     chai.request(server)
-      .delete(`/reservation/${resId}`)
+      .delete(`${REST_URL}/reservation/${resId}`)
       .end(function (err, res) {
         res.should.have.status(200)
         res.should.be.json
