@@ -6,7 +6,7 @@
   "author": "Keith Wade <keawade@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "node server.js",
     "postinstall": "mkdir data",
     "test": "mocha"
   },
