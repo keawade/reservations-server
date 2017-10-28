@@ -31,7 +31,8 @@ app.use(function (req, res, next) {
 
 app.use('/', routes)
 
-console.log('listening at localhost:3000')
-app.listen(process.env.PORT || 3000)
+const port = process.env.PORT || 3000;
+console.log(`listening at localhost:${port}`)
+app.listen(port)
 
 module.exports = app

@@ -9,6 +9,7 @@
         @input="$v.meetingName.$touch()"
         @blur="$v.meetingName.$touch()"
         required
+        prepend-icon="fa-calendar-check-o"
       ></v-text-field>
       <v-text-field
         label="Owner Name"
@@ -17,6 +18,7 @@
         @input="$v.owner.$touch()"
         @blur="$v.owner.$touch()"
         required
+        prepend-icon="fa-user-o"
       ></v-text-field>
       <v-text-field
         label="Owner E-mail"
@@ -25,11 +27,12 @@
         @input="$v.ownerEmail.$touch()"
         @blur="$v.ownerEmail.$touch()"
         required
+        prepend-icon="fa-envelope-o"
       ></v-text-field>
       <v-menu
         lazy
         :close-on-content-click="false"
-        v-model="startMenu"
+        v-model="startDateMenu"
         transition="scale-transition"
         offset-y
         full-width
@@ -40,15 +43,15 @@
         <v-text-field
           slot="activator"
           label="Start Date"
-          :error-messages="startErrors"
-          @input="$v.start.$touch()"
-          @blur="$v.start.$touch()"
-          v-model="start"
-          prepend-icon="event"
+          :error-messages="startDateErrors"
+          @input="$v.startDate.$touch()"
+          @blur="$v.startDate.$touch()"
+          v-model="startDate"
+          prepend-icon="fa-calendar"
           required
           readonly
         ></v-text-field>
-        <v-date-picker v-model="start" no-title scrollable actions>
+        <v-date-picker v-model="startDate" no-title scrollable actions>
           <template scope="{ save, cancel }">
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -61,7 +64,39 @@
       <v-menu
         lazy
         :close-on-content-click="false"
-        v-model="endMenu"
+        v-model="startTimeMenu"
+        transition="scale-transition"
+        offset-y
+        full-width
+        :nudge-right="40"
+        max-width="290px"
+        min-width="290px"
+      >
+        <v-text-field
+          slot="activator"
+          label="Start Time"
+          :error-messages="startTimeErrors"
+          @input="$v.startTime.$touch()"
+          @blur="$v.startTime.$touch()"
+          v-model="startTime"
+          prepend-icon="fa-clock-o"
+          required
+          readonly
+        ></v-text-field>
+        <v-time-picker v-model="startTime" no-title scrollable actions>
+          <template scope="{ save, cancel }">
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn flat color="primary" @click="cancel">Cancel</v-btn>
+              <v-btn flat color="primary" @click="save">OK</v-btn>
+            </v-card-actions>
+          </template>
+        </v-time-picker>
+      </v-menu>
+      <v-menu
+        lazy
+        :close-on-content-click="false"
+        v-model="endDateMenu"
         transition="scale-transition"
         offset-y
         full-width
@@ -72,15 +107,15 @@
         <v-text-field
           slot="activator"
           label="End Date"
-          :error-messages="startErrors"
-          @input="$v.end.$touch()"
-          @blur="$v.end.$touch()"
-          v-model="end"
-          prepend-icon="event"
+          :error-messages="endDateErrors"
+          @input="$v.endDate.$touch()"
+          @blur="$v.endDate.$touch()"
+          v-model="endDate"
+          prepend-icon="fa-calendar"
           required
           readonly
         ></v-text-field>
-        <v-date-picker v-model="end" no-title scrollable actions>
+        <v-date-picker v-model="endDate" no-title scrollable actions>
           <template scope="{ save, cancel }">
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -89,6 +124,38 @@
             </v-card-actions>
           </template>
         </v-date-picker>
+      </v-menu>
+      <v-menu
+        lazy
+        :close-on-content-click="false"
+        v-model="endTimeMenu"
+        transition="scale-transition"
+        offset-y
+        full-width
+        :nudge-right="40"
+        max-width="290px"
+        min-width="290px"
+      >
+        <v-text-field
+          slot="activator"
+          label="End Time"
+          :error-messages="endTimeErrors"
+          @input="$v.endTime.$touch()"
+          @blur="$v.endTime.$touch()"
+          v-model="endTime"
+          prepend-icon="fa-clock-o"
+          required
+          readonly
+        ></v-text-field>
+        <v-time-picker v-model="endTime" no-title scrollable actions>
+          <template scope="{ save, cancel }">
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn flat color="primary" @click="cancel">Cancel</v-btn>
+              <v-btn flat color="primary" @click="save">OK</v-btn>
+            </v-card-actions>
+          </template>
+        </v-time-picker>
       </v-menu>
       <v-btn @click="createRservation" :disabled="disabled">submit</v-btn>
     </form>
@@ -105,8 +172,10 @@ export default {
     meetingName: { required, maxLength: maxLength(20) },
     owner: { required },
     ownerEmail: { required, email },
-    start: { required },
-    end: { required }
+    startDate: { required },
+    startTime: { required },
+    endDate: { required },
+    endTime: { required }
   },
   data () {
     return {
@@ -114,8 +183,10 @@ export default {
       meetingName: '',
       owner: '',
       ownerEmail: '',
-      start: null,
-      end: null,
+      startTime: null,
+      startDate: null,
+      endTime: null,
+      endDate: null,
       startMenu: false,
       startModal: false,
       endMenu: false,
@@ -142,16 +213,28 @@ export default {
       !this.$v.ownerEmail.required && errors.push('E-mail is required')
       return errors
     },
-    startErrors () {
+    startDateErrors () {
       const errors = []
-      if (!this.$v.start.$dirty) return errors
-      !this.$v.start.required && errors.push('Start Date is required.')
+      if (!this.$v.startDate.$dirty) return errors
+      !this.$v.startDate.required && errors.push('Start date is required.')
       return errors
     },
-    endErrors () {
+    startTimeErrors () {
       const errors = []
-      if (!this.$v.end.$dirty) return errors
-      !this.$v.end.required && errors.push('End Date is required.')
+      if (!this.$v.startTime.$dirty) return errors
+      !this.$v.startTime.required && errors.push('Start time is required.')
+      return errors
+    },
+    endDateErrors () {
+      const errors = []
+      if (!this.$v.endDate.$dirty) return errors
+      !this.$v.endDate.required && errors.push('End date is required.')
+      return errors
+    },
+    endTimeErrors () {
+      const errors = []
+      if (!this.$v.endTime.$dirty) return errors
+      !this.$v.endTime.required && errors.push('End time is required.')
       return errors
     }
   },
@@ -162,8 +245,8 @@ export default {
         meetingName: this.meetingName,
         owner: this.owner,
         ownerEmail: this.ownerEmail,
-        start: this.start,
-        end: this.end
+        start: `${this.startDate} ${this.startTime}`,
+        end: `${this.endDate} ${this.endTime}`
       })
       .then((response) => {
         console.log('response:', response)
