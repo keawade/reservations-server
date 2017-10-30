@@ -30,6 +30,7 @@
     "@risingstack/graffiti-mongoose": "^6.0.0",
     "@types/moment": "^2.13.0",
     "body-parser": "^1.16.0",
+    "cypress": "^1.0.2",
     "express": "^4.14.0",
     "express-graphql": "^0.6.3",
     "graphql": "^0.9.1",
